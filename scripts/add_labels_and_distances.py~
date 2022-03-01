@@ -349,7 +349,8 @@ def compute_distances_to_gt(star_file, particle_orientations=False, prot_shapes=
                 gt_orientations = np.array(cur_gt_points[:, 4:], dtype=np.float)
 
             all_dists = np.zeros((cur_data_points.shape[0], gt_positions.shape[0]))
-            for k, (gt_position, gt_type, gt_orientation) in enumerate(zip(gt_positions, gt_types, gt_orientations)):
+            print(tomo_token, stack_token, mb_token)
+            for k, (gt_position, gt_type, gt_orientation) in enumerate(zip(gt_positions, gt_types, gt_orientations)): 
                 phi, theta, psi = tuple(gt_orientation[0:3])
                 rot = zyz_rot_matrix(phi, theta, psi)
                 cov = shape_dict[gt_type]

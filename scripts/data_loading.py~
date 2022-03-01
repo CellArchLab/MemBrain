@@ -25,11 +25,6 @@ def add_datasplit_to_star(star_file, train_tokens=None, val_tokens=None, test_to
     tomo_tokens = np.unique(star_dict['tomoToken'])
     all_tomo_tokens = star_dict['tomoToken']
     split_array = np.array(['no_choice'] * len(star_dict['tomoToken']))
-    if TEST_ALL:
-        split_array = np.array(['test'] * len(star_dict['tomoToken']))
-        star_dict['dataSplit'] = split_array
-        star_utils.write_star_file_from_dict(star_file, star_dict)
-        return
     if train_tokens is not None:
         for tomo_token in train_tokens.keys():
             for (stack_token, mb_token) in train_tokens[tomo_token]:
@@ -122,7 +117,7 @@ class MemBrain_dataset(Dataset):
         if self.subvolumes is not None and normalize:
             self.subvolumes = self.__scale_subvolumes()
         self.__print__()
-        if max_dist is not None and GT_AVAIL:
+        if max_dist is not None:
             self.__cap_distances__(max_dist)
 
 
@@ -291,8 +286,11 @@ class MemBrain_datamodule(LightningDataModule):
     def prepare_data(self) -> None:
         self.train = MemBrain_dataset(self.star_file, 'train', self.part_dists, dist_thres=self.dist_thres,
                                       max_dist=self.max_dist)
+        print(len(self.train))
         self.val = MemBrain_dataset(self.star_file, 'val', self.part_dists, dist_thres=self.dist_thres,
                                       max_dist=self.max_dist, test_phase=LOG_CLUSTERING_STATS)
+        print(len(self.val))
+        exit()
         self.test = MemBrain_dataset(self.star_file, 'test', self.part_dists, dist_thres=self.dist_thres,
                                      augment=False, test_phase=True, max_dist=self.max_dist)
 

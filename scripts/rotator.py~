@@ -346,7 +346,7 @@ class Rotator(object):
         """
         print()
         print('Starting process', pr_id, '...')
-        print('This process needs to convert', (np.sum(line_mask == pr_id) if return_dict is not None else all_lines.shape[0]), 'subvolumes.')
+        print('This process needs to convert', np.sum(line_mask == pr_id), 'subvolumes.')
         print()
 
         if self.n_pr > 1:

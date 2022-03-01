@@ -13,7 +13,7 @@ from time import time
 from config import *
 
 class MeanShift_clustering(object):
-    def __init__(self, star_file, out_dir, detection_by_classification=False):
+    def __init__(self, star_file, out_dir, detection_by_classification=False, pos_thres=-3.0):
         self.recluster_thres = None
         self.recluster_bw = None
         self.star_file = star_file
@@ -22,6 +22,7 @@ class MeanShift_clustering(object):
         self.out_dir = out_dir
         self.detection_by_classification = detection_by_classification
         self.__initialize_metrics()
+        self.pos_thres = pos_thres
 
     def __initialize_metrics(self):
         self.all_metrics = {
@@ -50,10 +51,12 @@ class MeanShift_clustering(object):
         star_dict['clusterPath'] = cluster_paths
         star_dict['pointsWithClusterLabels'] = points_with_labels_paths
         out_star_token = os.path.splitext(os.path.basename(self.star_file))[0] + '_bw' + str(bandwidth) + '.star'
-        star_utils.write_star_file_from_dict(out_star_token, star_dict)
-        return out_star_token
+        project_directory = os.path.join(PROJECT_DIRECTORY, PROJECT_NAME)
+        cluster_star = os.path.join(project_directory, 'cluster_centers', 'plain', out_star_token)
+        star_utils.write_star_file_from_dict(cluster_star, star_dict)
+        return cluster_star
 
-    def evaluate_clustering(self, star_file, prot_tokens, bandwidth, distance_thres=18, miccai_eval=False,
+    def evaluate_clustering(self, star_file, bandwidth, distance_thres=18, miccai_eval=False,
                             store_mb_wise=False):
         star_dict = star_utils.read_star_file_as_dict(star_file)
         settings = ParameterSettings(star_file)
@@ -82,7 +85,7 @@ class MeanShift_clustering(object):
             tomo_token = tomo_tokens[k]
             print('Tomo:', tomo_token, '  Membrane:', mb_token, 'Stack:', stack_token)
 
-            gt_dict = read_GT_data_membranorama_xml(xml_file, settings, prot_tokens)
+            gt_dict = read_GT_data_membranorama_xml(xml_file, settings, PROT_TOKENS)
             all_gt_points = np.concatenate([gt_dict[key] for key in gt_dict.keys()], axis=0)
             all_gt_points *= 4
 
@@ -100,13 +103,12 @@ class MeanShift_clustering(object):
             # if miccai_eval:
             #     cluster_points *= 4
 
-            cham, cham_gt, cham_pred = chamfer_distance(all_gt_points, cluster_points, prot_tokens, all_gt_types=all_gt_types)
-            cham_self, _, _ = chamfer_distance(cluster_points, cluster_points, prot_tokens, all_gt_types=all_gt_types, cham_self=True)
+            cham, cham_gt, cham_pred = chamfer_distance(all_gt_points, cluster_points, PROT_TOKENS_PRED, PROT_TOKENS_GT, all_gt_types=all_gt_types)
+            cham_self, _, _ = chamfer_distance(cluster_points, cluster_points, PROT_TOKENS_PRED, PROT_TOKENS_GT, all_gt_types=all_gt_types, cham_self=True)
             time_zero = time()
-            conf_mat, hits_idcs = confusion_matrix(all_gt_points, cluster_points, threshold=distance_thres,
-                                                   prot_tokens=prot_tokens, all_gt_types=all_gt_types,
+            conf_mat, hits_idcs = confusion_matrix(all_gt_points, cluster_points, threshold=distance_thres, prot_tokens_pred=PROT_TOKENS_PRED, prot_tokens_gt=PROT_TOKENS_GT, all_gt_types=all_gt_types,
                                                    return_hit_idcs=miccai_eval)
-            conf_mats_list = confusion_matrices_for_thresholds(all_gt_points, cluster_points, prot_tokens, all_gt_types=all_gt_types)
+            conf_mats_list = confusion_matrices_for_thresholds(all_gt_points, cluster_points, PROT_TOKENS_PRED, PROT_TOKENS_GT, all_gt_types=all_gt_types)
             assiciated_points = np.array(data_utils.get_csv_data(associated_points_path), dtype=np.float)[:, :3]
             ##TODO: What are these lines?
             # if (cluster_points.shape[0] == 1 and cluster_points[0, 0] == 0):
@@ -194,11 +196,13 @@ class MeanShift_clustering(object):
 
     def __cluster_NN_output(self, score_file, particle_csv, bandwidth=20):
         data, header = get_csv_data(score_file, with_header=True, return_header=True)
+        # data = get_csv_data(score_file)#, with_header=True, return_header=True)
         data = np.array(data, dtype=np.float)
+        # all_coords, scores = extract_coords_and_scores(data, header=None)
         all_coords, scores = extract_coords_and_scores(data, header)
         if not self.detection_by_classification:
             scores *= -1
-        pos_thres = (0.0 if self.detection_by_classification else -5.0)
+        pos_thres = (0.0 if self.detection_by_classification else self.pos_thres)
         pos_mask = scores > pos_thres
         coords = all_coords[pos_mask]
         print("Start clustering.")
@@ -313,9 +317,11 @@ def store_points_with_labels(score_file, out_dir, coords, labels, bandwidth, out
     return out_path
 
 
-def compute_normals_and_angles_for_centers(cluster_centers, particle_csv, settings):
+def compute_normals_and_angles_for_centers(cluster_centers, particle_csv, settings=None):
     '''Cluster centers should be given in bin1, i.e. also heatmaps should be computed in bin1!'''
-    scale = settings.consider_bin * 1.0 / 2
+    if settings is not None:
+        scale = settings.consider_bin * 1.0 / 2
+    else: scale = 2.
     all_array = data_utils.get_csv_data(particle_csv)
     pos_array = np.array(all_array[:, :3], dtype=np.float) * scale
     normal_array = np.array(all_array[:, 3:6], dtype=np.float)
