@@ -110,9 +110,9 @@ tomograms
 ```
 
 ### Setting up the environment
-For the correct Python environment, set up a virtual environment of Python 3.8 (e.g. using miniconda). Then activate the environment and install the required packages using
+For the correct Python environment, set up a virtual environment of Python 3.8 (e.g. using [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)). Then activate the environment and install the required packages using
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 ### Script usage
