@@ -187,12 +187,11 @@ For testing the functionality of MemBrain, we provide a toy dataset, containing 
 
 #### Data preparation
 The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
-For the membrane segmentations, unzip the folder membranes.zip in `./toy_data/tomograms/Tomo1/membranes.zip`
-The raw tomogram needs to be downloaded from EMDB: https://www.ebi.ac.uk/emdb/EMD-10780 .
-It should be unzipped and placed in the folder `./toy_data/tomograms/Tomo1/`
+For membrane segmentations, and the raw tomogram, please open a terminal in the MemBrain folder and run
+```sh prepare_toy_dataset.py```
 
 #### Adjustments of config.py
-For this toy example, only few things need to be adapted:
+Ideally, this toy example should work without adjusting config file values. However, if problems with the paths arise, changing to absolute paths might help:
 - PROJECT_NAME (can also stay the same)
 - PROJECT_DIRECTORY (this is where all outputs of MemBrain are stored; directory should exist beforehand)
 - TOMO_DIR (where your toy_data tomograms are stored, e.g., `/path/to/MemBrain/folder/MemBrain/toy_data/tomograms`)
