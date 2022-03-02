@@ -11,9 +11,14 @@ In this repository, we provide all code that is necessary to either
 - train a MemBrain model from scratch, or
 - predict particle locations on segmented membranes using a pre-trained model (see folder `./models`).
 
-In the following, the workflow is described to give a better understanding. 
+<p align="center">
+<img src="./imgs/memBrain_github.png" width="400">
+</p>
+
+You can learn more about the workflow of our method [here](https://github.com/CellArchLab/MemBrain/blob/master/workflow.md).
 
 For user instructions, jump [here](#instructions). For instructions on how to use our example dataset, jump [here](#example-data). For trouble shooting, jump [here](#troubleshooting).
+
 
 
 <a name="instructions"></a>
