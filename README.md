@@ -12,7 +12,7 @@ In this repository, we provide all code that is necessary to either
 - predict particle locations on segmented membranes using a pre-trained model (see folder `./models`).
 
 <p align="center">
-<img src="./imgs/memBrain_github.png" width="650">
+<img src="./imgs/memBrain_github.png" width="720">
 </p>
 
 You can learn more about the workflow of our method [here](https://github.com/CellArchLab/MemBrain/blob/master/workflow.md).
