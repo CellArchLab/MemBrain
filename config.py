@@ -1,8 +1,8 @@
 ## General project settings
 
 PROJECT_NAME = 'sample_pipeline'
-PROJECT_DIRECTORY = '/content/MemBrain_pipeline' # within this folder, the pipeline folder structure will be created
-TOMO_DIR = '/content/MemBrain/toy_data/tomograms' # path of directory containing the data (Tomo1, Tomo2, ...)
+PROJECT_DIRECTORY = '../../pipeline' # within this folder, the pipeline folder structure will be created
+TOMO_DIR = './toy_data/tomograms' # path of directory containing the data (Tomo1, Tomo2, ...)
 PIXEL_SPACING_BIN1 = 13.68
 UNBINNED_OFFSET_Z = 3174.  # This should normally be 0. For toy data, it is 3174.
 TOMO_BINNING = 4
@@ -26,8 +26,8 @@ PROT_TOKENS = {'PSII': ['PSII', 'PS2'],
 # the membranorama views for generating the ground truth.
 # In case you have clikced a particle without specific shape, you can also use the string "sphereX" where X corresponds to
 # the desired sphere radius.
-PSII_PARTICLE = '/fs/pool/pool-engel/Lorenz/4Lorenz/structures/Chlamy_C2_14A.mrc'
-B6F_PARTICLE = '/fs/pool/pool-engel/Lorenz/4Lorenz/structures/Cyt b6f_14A_center.mrc'
+PSII_PARTICLE = './toy_data/structures/Chlamy_C2_14A.mrc'
+B6F_PARTICLE = './toy_data/structures/Cyt b6f_14A_center.mrc'
 UK_PARTICLE = 'sphere12'  # "sphereX" tells the program to use a sphere with radius X voxels as a particle model
 PROT_SHAPES = {'PSII': PSII_PARTICLE, 'b6f': B6F_PARTICLE, 'UK': UK_PARTICLE} # keys should correspond to keys of PROT_TOKENS
 
