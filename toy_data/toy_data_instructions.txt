@@ -1,0 +1,23 @@
+We provide a toy data example, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740).
+
+### Data preparation ###
+
+The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
+For the membrane segmentations, unzip the folder "membranes.zip" in ./toy_data/tomograms/Tomo1/membranes.zip
+The raw tomogram needs to be downloaded from EMDB: https://www.ebi.ac.uk/emdb/EMD-10780
+It should be unzipped and placed in the folder ./toy_data/tomograms/Tomo1/tomograms
+
+
+### Instructions for MemBrain ###
+
+Step 0: Create a virtual Python environment, e.g., using miniconda (https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html), 
+and install packages as described in https://github.com/CellArchLab/MemBrain
+
+Step 1: Adjust the config.py file
+--> For this toy example, only few things need to be adapted:
+-----> PROJECT_NAME (can also stay the same)
+-----> PROJECT_DIRECTORY (this is where all outputs of MemBrain are stored; directory should exist beforehand)
+-----> TOMO_DIR (where your toy_data tomograms are stored, e.g., /path/to/MemBrain/folder/MemBrain/toy_data/tomograms)
+-----> USE_GPU (do you have GPU available? This will speed up training / inference)
+
+Step 2: Run Python scripts as described in https://github.com/CellArchLab/MemBrain
