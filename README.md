@@ -140,7 +140,7 @@ For membrane segmentations, and the raw tomogram, please open a terminal in the 
 
 ```sh prepare_toy_dataset.py```
 
-This will unzip the compressed membrane files, and download the raw tomogram from EMDB (https://www.ebi.ac.uk/emdb/EMD-10780).
+This will automatically unzip the compressed membrane files, download the raw tomogram from EMDB (https://www.ebi.ac.uk/emdb/EMD-10780), and integrate everything into the data structure.
 
 ### Adjustments of config.py
 Ideally, this toy example should work without adjusting config file values. However, if problems with the paths arise, changing to absolute paths might help:
