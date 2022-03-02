@@ -135,6 +135,7 @@ Outputs will be particle centers in .csv and .vtp format, stored in the folder p
 As an additional feature, we can extract estimates of particle orientations for each extracted particle position. This can be done using the command
 ```
 python step5a_extract_orientations.py
+```
 
 
 ## Example data
