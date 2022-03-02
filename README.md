@@ -5,7 +5,15 @@ MemBrain is a pipeline for the automated detection of membrane-bound proteins in
 the geometry of a pre-segmented membrane to reduce the complexity of the detection task. As a result, MemBrain only requires a small amount of 
 annotated data (even one single annotated membrane can be enough!) and can generalize well to unseen tomograms and membranes.
 
-For user instructions, jump [here](#instructions). For trouble shooting, jump [here](#troubleshooting).
+In this repository, we provide all code that is necessary to either
+- train a MemBrain model from scratch, or
+- predict particle locations on segmented membranes using a pre-trained model (see folder "./models").
+
+In the following, the workflow is described to give a better understanding. 
+
+For user instructions, jump [here](#instructions). For instructions on how to use our example dataset, jump [here](#example-data). For trouble shooting, jump [here](#troubleshooting).
+
+
 
 ### Workflow
 #### Inputs
@@ -170,7 +178,7 @@ In the config file, you can also specify the bandwidths that should be used for 
 
 Outputs will be particle centers in .csv and .vtp format, stored in the folder particle_centers/raw/
 
-### Test data
+### Example data
 For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here, or in the file "./toy_data/instruction.txt":
 
 #### Data preparation
