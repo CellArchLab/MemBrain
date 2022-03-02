@@ -176,7 +176,7 @@ For testing the functionality of MemBrain, we provide a toy dataset, containing 
 #### Data preparation
 The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
 For the membrane segmentations, unzip the folder "membranes.zip" in ./toy_data/tomograms/Tomo1/membranes.zip
-The raw tomogram needs to be downloaded from EMDB: https://www.ebi.ac.uk/emdb/EMD-10780
+The raw tomogram needs to be downloaded from EMDB: https://www.ebi.ac.uk/emdb/EMD-10780 .
 It should be unzipped and placed in the folder ./toy_data/tomograms/Tomo1/tomograms
 
 #### Adjustments of config.py
@@ -187,7 +187,7 @@ For this toy example, only few things need to be adapted:
 - USE_GPU (do you have GPU available? This will speed up training / inference)
 
 #### Script execution
-The remaining instructions for this toy dataset are analogous to the common script executions, see [here] (#setting-up-the-environment).
+The remaining instructions for this toy dataset are analogous to the common script executions, see [here](#setting-up-the-environment).
 
 
 <a name="troubleshooting"></a>
