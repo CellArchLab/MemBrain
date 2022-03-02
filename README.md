@@ -7,7 +7,7 @@ annotated data (even one single annotated membrane can be enough!) and can gener
 
 In this repository, we provide all code that is necessary to either
 - train a MemBrain model from scratch, or
-- predict particle locations on segmented membranes using a pre-trained model (see folder "./models").
+- predict particle locations on segmented membranes using a pre-trained model (see folder './models').
 
 In the following, the workflow is described to give a better understanding. 
 
