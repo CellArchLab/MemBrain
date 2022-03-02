@@ -188,6 +188,7 @@ For testing the functionality of MemBrain, we provide a toy dataset, containing 
 #### Data preparation
 The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
 For membrane segmentations, and the raw tomogram, please open a terminal in the MemBrain folder and run
+
 ```sh prepare_toy_dataset.py```
 
 #### Adjustments of config.py
