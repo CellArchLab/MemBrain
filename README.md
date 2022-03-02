@@ -130,10 +130,10 @@ In the config file, you can also specify the bandwidths that should be used for 
 
 Outputs will be particle centers in .csv and .vtp format, stored in the folder particle_centers/raw/`
 
-### Example data
+## Example data
 For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here:
 
-#### Data preparation
+### Data preparation
 The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
 For membrane segmentations, and the raw tomogram, please open a terminal in the MemBrain folder and run
 
@@ -141,19 +141,19 @@ For membrane segmentations, and the raw tomogram, please open a terminal in the 
 
 This will unzip the compressed membrane files, and download the raw tomogram from EMDB (https://www.ebi.ac.uk/emdb/EMD-10780).
 
-#### Adjustments of config.py
+### Adjustments of config.py
 Ideally, this toy example should work without adjusting config file values. However, if problems with the paths arise, changing to absolute paths might help:
 - PROJECT_NAME (can also stay the same)
 - PROJECT_DIRECTORY (this is where all outputs of MemBrain are stored; directory should exist beforehand)
 - TOMO_DIR (where your toy_data tomograms are stored, e.g., `/path/to/MemBrain/folder/MemBrain/toy_data/tomograms`)
 - USE_GPU (do you have GPU available? This will speed up training / inference)
 
-#### Script execution
+### Script execution
 The remaining instructions for this toy dataset are analogous to the common script executions, see [here](#setting-up-the-environment).
 
 
 <a name="troubleshooting"></a>
-### Troubleshooting
+## Troubleshooting
 - Loss is very high (1e2 and above): Most likely the labels have not been set correctly. Example problem for Membranorama: Membranorama stores positions based on actual pixel spacing, which it receives from a tomograms header. So if the tomogram’s header has pixel spacing 1.0 (often the case after some preprocessing with Python, e.g. CryoCARE), the Membranorama output positions will not show the exact positions w.r.t. pixel spacing.
 Possible solutions:
   - Adjust Membranorama positions (multiply by pixel spacing)
