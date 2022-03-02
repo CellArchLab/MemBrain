@@ -30,7 +30,7 @@ For user instructions, jump [here](#instructions). For instructions on how to us
 The following instructions show the required data structure and give hints on how to properly use the scripts.
 
 ### Data structure
-MemBrain relies on a specific data structure, where tomograms, membrane segmentations, membrane meshes, and ground truth positions should be stored:
+MemBrain relies on a specific data structure, where tomograms, membrane segmentations, membrane meshes, and ground truth positions should be stored: (an exemplary data structure can also be found in our [example dataset](#example-data))
 ```
 tomograms
 │
