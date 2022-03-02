@@ -1,6 +1,12 @@
 # MemBrain
 ### Automated detection of membrane-bound proteins
 
+<p align="center">
+<img src="./imgs/memBrain_github.png" width="820">
+</p>
+
+<br>
+
 This is the code accompanying our publication https://www.biorxiv.org/content/10.1101/2022.03.01.480844v1?rss=1 .
 
 MemBrain is a pipeline for the automated detection of membrane-bound proteins in cryo-electron tomograms. It utilizes 
@@ -10,14 +16,8 @@ annotated data (even one single annotated membrane can be enough!) and can gener
 In this repository, we provide all code that is necessary to either
 - train a MemBrain model from scratch, or
 - predict particle locations on segmented membranes using a pre-trained model (see folder `./models`).
-<br>
-<br>
-<br>
 
 
-<p align="center">
-<img src="./imgs/memBrain_github.png" width="820">
-</p>
 
 You can learn more about the workflow of our method [here](https://github.com/CellArchLab/MemBrain/blob/master/workflow.md).
 
