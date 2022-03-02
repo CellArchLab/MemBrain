@@ -2,7 +2,7 @@
 ### Automated detection of membrane-bound proteins
 
 <p align="center">
-<img src="./imgs/memBrain_github.png" width="820">
+<img src="./imgs/memBrain_github2.png" width="820">
 </p>
 
 <br>
@@ -138,6 +138,8 @@ The corresponding ground truth data positions, as well as membrane meshes are pr
 For membrane segmentations, and the raw tomogram, please open a terminal in the MemBrain folder and run
 
 ```sh prepare_toy_dataset.py```
+
+This will unzip the compressed membrane files, and download the raw tomogram from EMDB (https://www.ebi.ac.uk/emdb/EMD-10780).
 
 #### Adjustments of config.py
 Ideally, this toy example should work without adjusting config file values. However, if problems with the paths arise, changing to absolute paths might help:
