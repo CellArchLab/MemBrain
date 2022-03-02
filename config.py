@@ -1,8 +1,8 @@
 ## General project settings
 
 PROJECT_NAME = 'sample_pipeline'
-PROJECT_DIRECTORY = '/fs/pool/pool-engel/Lorenz/MemBrain_testing/pipeline' # within this folder, the pipeline folder structure will be created
-TOMO_DIR = '/fs/pool/pool-engel/Lorenz/MemBrain_testing/code/MemBrain/toy_data/tomograms' # path of directory containing the data (Tomo1, Tomo2, ...)
+PROJECT_DIRECTORY = '/content/MemBrain_pipeline' # within this folder, the pipeline folder structure will be created
+TOMO_DIR = '/content/MemBrain/toy_data/tomograms' # path of directory containing the data (Tomo1, Tomo2, ...)
 PIXEL_SPACING_BIN1 = 13.68
 UNBINNED_OFFSET_Z = 3174.  # This should normally be 0. For toy data, it is 3174.
 TOMO_BINNING = 4
