@@ -131,6 +131,12 @@ In the config file, you can also specify the bandwidths that should be used for 
 
 Outputs will be particle centers in .csv and .vtp format, stored in the folder particle_centers/raw/`
 
+#### 5. Find particle orientations
+As an additional feature, we can extract estimates of particle orientations for each extracted particle position. This can be done using the command
+```
+python step5a_extract_orientations.py
+
+
 ## Example data
 For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here:
 
