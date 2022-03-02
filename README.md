@@ -36,7 +36,7 @@ Currently, this only works for sheet-like membranes. For other membrane types, y
 #### Points and normals sampling
 According to the user's choice, points are sampled on one side of a membrane, together with their respective normal vectors. A normal voting procedure is performed to make the normal vectors more robust.
 
-To confirm that the correct side was picked, you can run the script "step1b_inspect_picked_sides.py".
+To confirm that the correct side was picked, you can run the script `step1b_inspect_picked_sides.py`.
 
 <p align="center">
 <img src="./imgs/membrane_side_inspection.png" width="400">
@@ -160,7 +160,7 @@ The flag --ckpt is optional. If you want to continue training from a previously 
 
 Again, you can specify training parameters in the config file, such as number of epochs, batch size, cutoff for particle distances, and particles to use for distance computation, in the config file.
 
-Trained models and checkpoints will be stored in the folder "lightning_logs".
+Trained models and checkpoints will be stored in the folder `lightning_logs`.
 
 #### 3.2. Inference on data
 Apply the trained model on unseen data by using 
@@ -183,11 +183,11 @@ In the config file, you can also specify the bandwidths that should be used for 
 Outputs will be particle centers in .csv and .vtp format, stored in the folder particle_centers/raw/
 
 ### Example data
-For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here, or in the file "./toy_data/instruction.txt":
+For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here, or in the file `./toy_data/instruction.txt`:
 
 #### Data preparation
 The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
-For the membrane segmentations, unzip the folder "membranes.zip" in ./toy_data/tomograms/Tomo1/membranes.zip
+For the membrane segmentations, unzip the folder membranes.zip` in ./toy_data/tomograms/Tomo1/membranes.zip
 The raw tomogram needs to be downloaded from EMDB: https://www.ebi.ac.uk/emdb/EMD-10780 .
 It should be unzipped and placed in the folder ./toy_data/tomograms/Tomo1/tomograms
 
