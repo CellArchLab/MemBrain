@@ -170,8 +170,8 @@ In the config file, you can also specify the bandwidths that should be used for 
 
 Outputs will be particle centers in .csv and .vtp format, stored in the folder particle_centers/raw/
 
-#### Outlook
-In further versions, I will add functionalities for computing particle orientations or a network for the classification of different particles.
+### Test data
+For testing the functionality of MemBrain, we provide a toy dataset. Tbd.
 
 <a name="troubleshooting"></a>
 ### Troubleshooting
