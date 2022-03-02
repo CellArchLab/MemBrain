@@ -119,7 +119,6 @@ tomograms
 
 ### Setting up the environment
 For the correct Python environment, set up a virtual environment of Python 3.8 (e.g., using [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)). When using Miniconda, the following commands can be performed, after Miniconda is installed:
-Then activate the environment and install the required packages using
 ```
 conda create --name MemBrain_Venv python==3.8
 conda activate MemBrain_Venv
