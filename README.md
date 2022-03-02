@@ -171,7 +171,24 @@ In the config file, you can also specify the bandwidths that should be used for 
 Outputs will be particle centers in .csv and .vtp format, stored in the folder particle_centers/raw/
 
 ### Test data
-For testing the functionality of MemBrain, we provide a toy dataset. Tbd.
+For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here, or in the file "./toy_data/instruction.txt":
+
+#### Data preparation
+The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
+For the membrane segmentations, unzip the folder "membranes.zip" in ./toy_data/tomograms/Tomo1/membranes.zip
+The raw tomogram needs to be downloaded from EMDB: https://www.ebi.ac.uk/emdb/EMD-10780
+It should be unzipped and placed in the folder ./toy_data/tomograms/Tomo1/tomograms
+
+#### Adjustments of config.py
+For this toy example, only few things need to be adapted:
+- PROJECT_NAME (can also stay the same)
+- PROJECT_DIRECTORY (this is where all outputs of MemBrain are stored; directory should exist beforehand)
+- TOMO_DIR (where your toy_data tomograms are stored, e.g., /path/to/MemBrain/folder/MemBrain/toy_data/tomograms)
+- USE_GPU (do you have GPU available? This will speed up training / inference)
+
+#### Script execution
+The remaining instructions for this toy dataset are analogous to the common script executions, see [here] (#setting-up-the-environment).
+
 
 <a name="troubleshooting"></a>
 ### Troubleshooting
