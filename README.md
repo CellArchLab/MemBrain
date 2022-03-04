@@ -145,7 +145,7 @@ For testing the functionality of MemBrain, we provide a toy dataset, containing 
 The corresponding ground truth data positions, as well as membrane meshes are provided without requiring further processing.
 For membrane segmentations, and the raw tomogram, please open a terminal in the MemBrain folder and run
 
-```sh prepare_toy_dataset.py```
+```sh prepare_toy_dataset.sh```
 
 This will automatically unzip the compressed membrane files, download the raw tomogram from EMDB (https://www.ebi.ac.uk/emdb/EMD-10780), and integrate everything into the data structure.
 
