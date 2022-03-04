@@ -81,6 +81,10 @@ pip install -r requirements.txt
 First, open the config file (config.py) and adjust the values according to your needs.
 
 #### 1. Choose the correct picking sides of your membranes and sample points.
+!! Known Bug !!
+Unfortunately, the current version of this script requires a graphical user interface (from matplotlib) to be displayed. This can cause problems when running on a compute cluster. When using a machine with graphical interface, it should not be a problem.
+!!  ------  !!
+
 Run the command
 ```
 python step1_sample_points.py
@@ -139,6 +143,10 @@ python step5a_extract_orientations.py
 
 
 ## Example data
+!! Known Bug !!
+Unfortunately, the current version of script "step1_sample_points..." requires a graphical user interface (from matplotlib) to be displayed. This can cause problems when running on a compute cluster. When using a machine with graphical interface, it should not be a problem.
+!!  ------  !!
+
 For testing the functionality of MemBrain, we provide a toy dataset, containing 3 membranes from one tomogram (https://elifesciences.org/articles/53740). Instructions how to use it can be found here:
 
 ### Data preparation
