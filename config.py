@@ -1,14 +1,20 @@
-## General project settings
+## Setting the paths
 
 PROJECT_NAME = 'sample_pipeline'
 PROJECT_DIRECTORY = '../../pipeline' # within this folder, the pipeline folder structure will be created
 TOMO_DIR = './toy_data/tomograms' # path of directory containing the data (Tomo1, Tomo2, ...)
+
+## General project settings
+
 PIXEL_SPACING_BIN1 = 13.68
 UNBINNED_OFFSET_Z = 3174.  # This should normally be 0. For toy data, it is 3174.
 TOMO_BINNING = 4
 USE_GPU = True
+PICK_ON_BOTH_SIDES = True # This should be True, if you are working on a cluster without the possibility to use
+                            # graphical user interfaces (from matplotlib)
 TEST_ALL = False  # Should all membranes be assigned to the test set?
 GT_AVAIL = True  # Is ground truth data available?
+
 
 ## Protein details
 
@@ -53,9 +59,9 @@ LP_CUTOFF = None    # cutoff value for low-pass filtering of tomogram before ext
 # list specifies a certain membrane via (stack token, membrane token)
 # If tokens are set to NONE, splits are automatically generated using the splits (70, 15, 15)
 # CAUTION: This may lead to different training results and biases, as at least the test set should be fixed.
-TRAIN_TOKENS = {'Tomo1': [('S1', 'M1')]}
-VAL_TOKENS = {'Tomo1': [('S2', 'M15')]}
-TEST_TOKENS = {'Tomo1': [('S4', 'M8')]}
+TRAIN_TOKENS = {'Tomo1': [('S1', 'M1A'), ('S1', 'M1B')]}
+VAL_TOKENS = {'Tomo1': [('S2', 'M15A'), ('S2', 'M15B')]}
+TEST_TOKENS = {'Tomo1': [('S4', 'M8A'), ('S4', 'M8B')]}
 if TEST_ALL:
     TRAIN_TOKENS = None
     VAL_TOKENS = None

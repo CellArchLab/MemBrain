@@ -20,8 +20,8 @@ def main():
     create_initial_stars.create_initial_stars(TOMO_DIR, out_star, gt_out_dir, binning=TOMO_BINNING, with_dimi=False,
                                               with_denoised=True, pixel_spacing_bin1=PIXEL_SPACING_BIN1,
                                               unbinned_offset_Z=UNBINNED_OFFSET_Z)
-    inspect_segmentations.fuse_segmentations_together(out_star, os.path.join(project_directory, 'temp_files/'))
-    inspect_segmentations.inspect_segmentation_before(out_star, out_star2, os.path.join(project_directory, 'temp_files/'))
+    # inspect_segmentations.fuse_segmentations_together(out_star, os.path.join(project_directory, 'temp_files/'))
+    # inspect_segmentations.inspect_segmentation_before(out_star, out_star2, os.path.join(project_directory, 'temp_files/'))
     normals_star = sample_points_on_seg(project_directory, out_star2, os.path.join(project_directory, 'positions', 'sampled'), max_mb_dist=MAX_DIST_FROM_MEMBRANE, shrink_thres=SHRINK_THRES)
     normals_corrected_star = normal_voting_for_star(normals_star, os.path.join(project_directory, 'positions', 'normals_corrected'), npr=N_PR_NORMALVOTING)
     compute_all_Euler_angles_for_star(normals_corrected_star, os.path.join(project_directory, 'positions', 'normals_corrected_with_euler'))

@@ -3,6 +3,54 @@ from collections import OrderedDict
 import numpy as np
 
 
+def _spread_list(in_list, duplication_times=2):
+    """
+    duplicates each list entry
+    :param in_list: list to be duplicated
+    :return: duplicated list
+    """
+    new_list = []
+    for entry in in_list:
+        for _ in range(duplication_times):
+            new_list.append(entry)
+    return new_list
+
+
+def spread_lines(in_star, line_spread=2, out_star=None):
+    """
+    spreads the lines of a .star file:
+    Each line will be duplicated.
+    :param in_star: Star file to be spreaded
+    :param line_spread: number of times a line should be duplicated
+    :param out_star: (optional) out star file name (otherwise, input is overwritten)
+    :return: Writes into file
+    """
+
+    star_dict = read_star_file_as_dict(in_star)
+    star_dict_new = {}
+    for key in star_dict.keys():
+        star_dict_new[key] = _spread_list(star_dict[key], duplication_times=line_spread)
+    if out_star is None:
+        out_star = in_star
+    write_star_file_from_dict(out_star, star_dict_new)
+
+def split_membranes_for_both_side_picks(in_star, out_star=None):
+    star_dict = read_star_file_as_dict(in_star)
+    mbs = star_dict['mbToken']
+    print(mbs)
+    new_mbs = []
+    for k, entry in enumerate(mbs):
+        if k % 2 == 0:
+            new_mbs.append(entry + 'A')
+        else:
+            new_mbs.append(entry + 'B')
+    star_dict['mbToken'] = new_mbs
+    if out_star is None:
+        out_star = in_star
+    write_star_file_from_dict(out_star, star_dict)
+
+
+
 def read_star_file_as_dict(star_path):
     """
     opens a star file and returns it as a Python dictionary.

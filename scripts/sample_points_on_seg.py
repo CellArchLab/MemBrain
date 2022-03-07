@@ -279,7 +279,6 @@ def sample_uniformly(tomo_seg_path, out_path, tomo_token, stack_token, mb_token,
     threshold: threshold for cropping the prediction from the edges; should be around 170
     """
     print('Sampling points.')
-    time_zero = time()
     tomo_seg = data_utils.load_tomogram(tomo_seg_path)
     dist_trafo, idcs = distance_transform_edt(tomo_seg != 1, return_indices=True)
     idcs = np.transpose(idcs, (1,2,3,0))
@@ -292,7 +291,6 @@ def sample_uniformly(tomo_seg_path, out_path, tomo_token, stack_token, mb_token,
     mask10th = np.array(range(new_idcs.shape[0])) % 10 == 0
     new_idcs = new_idcs[mask10th]
     mb_half_idcs = np.argwhere(tomo_seg == 2)
-
     mb_half_mask = (new_idcs[:, None] == mb_half_idcs).all(-1).any(-1)
     new_idcs = new_idcs[mb_half_mask]
 
@@ -303,8 +301,6 @@ def sample_uniformly(tomo_seg_path, out_path, tomo_token, stack_token, mb_token,
     unique_mb_points = np.unique(new_mb_points, axis=0)
 
     ## Find edges of membrane
-
-    mb_idcs = np.argwhere(tomo_seg == 1)
 
     conv_kernel = np.ones((7,7,7))
     temp_tomo = convolve((tomo_seg == 1)*1.0, conv_kernel)

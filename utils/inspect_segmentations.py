@@ -3,6 +3,9 @@ import os
 import numpy as np
 from utils import data_utils
 import matplotlib.pyplot as plt
+from config import *
+from sklearn.decomposition import PCA
+
 
 point_list = []
 def line_picker(line, mouseevent):
@@ -14,7 +17,7 @@ def line_picker(line, mouseevent):
     if mouseevent.xdata is None:
         return False, dict()
     point_list[-1] = np.array((mouseevent.xdata, mouseevent.ydata))
-    print(point_list)
+    print("Adding point", point_list[-1])
     return True, dict()
 
 def find_mean_idx_z(seg_mask):
@@ -82,6 +85,7 @@ def inspect_segmentation_before(star_file, out_star_file, temp_folder):
     for i, tomo_token in enumerate(tomo_tokens):
         if tomo_token != prev_token:
             tomo = data_utils.load_tomogram(tomo_paths[i])
+            tomo_shape = tomo.shape
             all_seg = data_utils.load_tomogram(os.path.join(temp_folder, tomo_token + '_all_mbs.mrc'))
             prev_token = tomo_token
 
@@ -93,24 +97,41 @@ def inspect_segmentation_before(star_file, out_star_file, temp_folder):
         origin_pos_z.append(z_idx)
         image = np.transpose(tomo[:, :, z_idx], (1, 0)).copy()
         seg_img = np.transpose(seg[:, :, z_idx], (1, 0))
-        image[seg_img] = np.max(image)
 
-
-        xlim, ylim = find_xy_lim(seg_img)
-        fig = plt.figure()
-        ax1 = fig.add_subplot(111)
-        ax1.set_title('Tomogram: ' + tomo_token + ', Membrane: ' + mb_tokens[i] + 'Stack: ' + stack_tokens[i] +
-                      "\nPlease specify the picking side by clicking somewhere on the correct side\n and closing this "
-                      "window. The next membrane will appear. \n(hint: click with a large distance to the membrane for "
-                      "more stability)")
-        point_list.append(None)
-        ax1.imshow(image, cmap='gray', origin='lower', picker=line_picker)
-        plt.xlim(xlim)
-        plt.ylim(ylim)
-        plt.show()
+        if PICK_ON_BOTH_SIDES:
+            seg_idcs = np.argwhere(seg_img)
+            pca = PCA(n_components=1)
+            pca.fit(seg_idcs)
+            pca_vec = pca.components_[0]
+            add_vec = np.array((pca_vec[1], -pca_vec[0]))
+            center = np.mean(seg_idcs, axis=0)
+            pointA_y = center[0] - add_vec[0] * 300
+            pointB_y = center[0] + add_vec[0] * 300
+            pointA_x = center[1] - add_vec[1] * 300
+            pointB_x = center[1] + add_vec[1] * 300
+            point_list.append(np.array((pointA_x, pointA_y)))
+            point_list.append(np.array((pointB_x, pointB_y)))
+            origin_pos_z.append(z_idx)
+        else:
+            image[seg_img] = np.max(image)
+            xlim, ylim = find_xy_lim(seg_img)
+            fig = plt.figure()
+            ax1 = fig.add_subplot(111)
+            ax1.set_title('Tomogram: ' + tomo_token + ', Membrane: ' + mb_tokens[i] + 'Stack: ' + stack_tokens[i] +
+                          "\nPlease specify the picking side by clicking somewhere on the correct side\n and closing this "
+                          "window. The next membrane will appear. \n(hint: click with a large distance to the membrane for "
+                          "more stability)")
+            point_list.append(None)
+            ax1.imshow(image, cmap='gray', origin='lower', picker=line_picker)
+            plt.xlim(xlim)
+            plt.ylim(ylim)
+            plt.show()
     origin_pos_x = [point[0] for point in point_list]
     origin_pos_y = [point[1] for point in point_list]
     star_utils.copy_star_file(star_file, out_star_file)
+    if PICK_ON_BOTH_SIDES:
+        star_utils.spread_lines(out_star_file, line_spread=2)
+        star_utils.split_membranes_for_both_side_picks(out_star_file)
     star_utils.add_or_change_column_to_star_file(out_star_file, 'origin_pos_x', origin_pos_x)
     star_utils.add_or_change_column_to_star_file(out_star_file, 'origin_pos_y', origin_pos_y)
     star_utils.add_or_change_column_to_star_file(out_star_file, 'origin_pos_z', origin_pos_z)
