@@ -80,6 +80,8 @@ pip install -r requirements.txt
 #### 0. Adjust config file
 First, open the config file (config.py) and adjust the values according to your needs.
 
+Hint: Setting "PICK_ON_BOTH_SIDES" to True will skip the step for manual picking of membrane sides, and process both sides of each membrane. While this setting is recommended, if graphical interfaces cannot be displayed (e.g. on a compute cluster), it is not recommended for training, as both sides use the same ground truth (which introduces probably wrong information).
+
 #### 1. Choose the correct picking sides of your membranes and sample points.
 
 !! Known Bug !!
@@ -179,3 +181,8 @@ The remaining instructions for this toy dataset are analogous to the common scri
 Possible solutions:
   - Adjust Membranorama positions (multiply by pixel spacing)
   - Set tomogram pixel spacing to 1.0 in MemBrain pipeline (will lead to further adjustments, e.g. when choosing particle radius)
+
+- Error ```    origin_pos_x = [point[0] for point in point_list]
+TypeError: 'NoneType' object is not subscriptable```
+This is an issue with the picked positions: Either, you did not click on the corresponding side of a membrane in the graphical user interface. Or (more likely), you are working on a machine that does not support the display of graphical user interfaces.
+Solution: Set the parameter "PICK_ON_BOTH_SIDES" in config.py to True. This will skip the manual side picking step.
