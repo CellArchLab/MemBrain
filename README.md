@@ -72,8 +72,9 @@ For the correct Python environment, set up a virtual environment of Python 3.8 (
 git clone https://github.com/CellArchLab/MemBrain.git
 cd MemBrain
 conda env create -f MemBrain_requirements.yml
-conda activate MemBrain_Venv
+conda activate MemBrain
 ```
+Note that the virtual environment should always be activated when running Python scripts from this repository.
 
 ### Script usage
 #### 0. Adjust config file
