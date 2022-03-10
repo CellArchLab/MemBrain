@@ -67,13 +67,12 @@ tomograms
 ```
 
 ### Setting up the environment
-For the correct Python environment, set up a virtual environment of Python 3.8 (e.g., using [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)). When using Miniconda, the following commands can be performed, after Miniconda is installed:
+For the correct Python environment, set up a virtual environment of Python 3.8 (e.g., using [miniconda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)). When using Miniconda, the following commands can be performed to create a Python environment, after Miniconda is installed:
 ```
-conda create --name MemBrain_Venv python==3.8
-conda activate MemBrain_Venv
 git clone https://github.com/CellArchLab/MemBrain.git
 cd MemBrain
-pip install -r requirements.txt
+conda env create -f MemBrain_requirements.yml
+conda activate MemBrain_Venv
 ```
 
 ### Script usage
