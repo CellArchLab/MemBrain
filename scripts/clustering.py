@@ -204,7 +204,13 @@ class MeanShift_clustering(object):
             scores *= -1
         pos_thres = (0.0 if self.detection_by_classification else self.pos_thres)
         pos_mask = scores > pos_thres
+        if np.sum(pos_mask) == 0:
+            out_path = store_cluster_centers(score_file, self.out_dir, None, bandwidth, out_stem='meanshift')
+            points_with_labels_path = store_points_with_labels(score_file, self.out_dir, None, None, bandwidth, out_stem='meanshift')
+            print("Did not find any points with acceptable predicted distance. Returning 0-sized array.")
+            return out_path, points_with_labels_path
         coords = all_coords[pos_mask]
+        print(pos_mask.shape)
         print("Start clustering.")
         cluster_centers, cluster_labels = mean_shift(all_coords[pos_mask], scores[pos_mask], bandwidth=bandwidth,
                                                      weighting='quadratic', kernel='gauss', n_pr=8)
@@ -306,14 +312,16 @@ def store_points_with_labels(score_file, out_dir, coords, labels, bandwidth, out
     if out_stem is not None:
         csv_stem = out_stem + '_bw' + str(bandwidth) + '_' + csv_stem
     out_path = os.path.join(out_dir, csv_stem)
-    if len(labels.shape) == 1:
+    if labels is not None and len(labels.shape) == 1:
         labels = np.expand_dims(labels, 1)
-    out_coords = np.concatenate((coords, labels), 1)
+    if coords is not None:
+        out_coords = np.concatenate((coords, labels), 1)
     with open(out_path, 'w') as out_file:
         csv_writer = csv.writer(out_file, delimiter=out_del)
-        for i in range(out_coords.shape[0]):
-            cur_coord = out_coords[i]
-            csv_writer.writerow(cur_coord)
+        if coords is not None:
+            for i in range(out_coords.shape[0]):
+                cur_coord = out_coords[i]
+                csv_writer.writerow(cur_coord)
     return out_path
 
 
@@ -340,10 +348,12 @@ def store_cluster_centers(score_file, out_dir, cluster_centers, bandwidth, out_s
     out_path = os.path.join(out_dir, csv_stem)
     with open(out_path, 'w') as out_file:
         csv_writer = csv.writer(out_file, delimiter=out_del)
-        for i in range(cluster_centers.shape[0]):
-            cur_cen = cluster_centers[i]
-            csv_writer.writerow(cur_cen)
-    out_path_vtk = out_path[:-3] + 'vtp'
-    data_utils.convert_csv_to_vtp(out_path, out_path_vtk)
+        if not cluster_centers is None:
+            for i in range(cluster_centers.shape[0]):
+                cur_cen = cluster_centers[i]
+                csv_writer.writerow(cur_cen)
+    if not cluster_centers is None:
+        out_path_vtk = out_path[:-3] + 'vtp'
+        data_utils.convert_csv_to_vtp(out_path, out_path_vtk)
     return out_path
 

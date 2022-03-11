@@ -214,7 +214,7 @@ def store_heatmaps_for_dataloader(dataloader, model, out_dir, star_file, conside
     all_mbs = []
     all_normals = []
     all_angles = []
-    device = ('cuda' if USE_GPU else 'cpu')
+    device = ('cuda' if (USE_GPU and torch.cuda.is_available()) else 'cpu')
     model = model.to(device)
     for batch in dataloader:
         try:

@@ -20,7 +20,7 @@ def main():
         else:
             cluster_star = ms.start_clustering(bandwidth=bandwidth)
         if args.eval:
-            ms.evaluate_clustering(cluster_star, PROT_TOKENS, bandwidth=bandwidth, store_mb_wise=True)
+            ms.evaluate_clustering(cluster_star, bandwidth=bandwidth, store_mb_wise=True)
     if args.eval:
         ms.store_metrics()
 
