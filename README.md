@@ -74,7 +74,7 @@ cd MemBrain
 conda env create -f MemBrain_requirements.yml
 conda activate MemBrain
 ```
-In case you have a GPU available, you can run ```conda env create -f MemBrain_requirements.yml``` instead of the corresponding line above. This will create an environment that is able to make use of the GPU (for training and inference of the NN; other steps are not influenced).
+In case you have a GPU available, you can run ```conda env create -f MemBrain_requirements_gpu.yml``` instead of the corresponding line above. This will create an environment that is able to make use of the GPU (for training and inference of the NN; other steps are not influenced).
 
 Note that the virtual environment should always be activated when running Python scripts from this repository.
 
