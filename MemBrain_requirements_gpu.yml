@@ -1,4 +1,4 @@
-name: MemBrain
+name: MemBrain_GPU
 channels:
   - conda-forge
   - pytorch
