@@ -126,9 +126,15 @@ Executing this script will generate heatmaps for each membrane and for each part
 #### 4. Find particle center positions
 Finally, we can run the script
 ```
+python step4_extract_particle_centers.py
+```
+or 
+```
 python step4_extract_particle_centers.py --eval True
 ```
+
 --eval is again an optional argument. If set to True, evaluation metrics will be computed, such as the Chamfer distance between prediction and ground truth positions, as well as hit statistics based on various hit threshold distances.
+Note: For ```--eval True``` to work, you will need to have corresponding .xml files for each membrane side (currently, this might not be the case in the toy example).
 
 In the config file, you can also specify the bandwidths that should be used for clustering. (Per clustering, only one is used. Setting multiple bandwidths can help to compare them). 
 
