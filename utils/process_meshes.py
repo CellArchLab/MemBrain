@@ -9,10 +9,18 @@ class Mesh(object):
         self.vertices = vertices
         self.triangles = []
         self.triangle_combos = triangle_combos
+        self.compute_triangle_centers()
         # self.make_triangles(triangle_combos)
 
     def __len__(self):
         return len(self.triangle_combos)
+
+    def compute_triangle_centers(self):
+        centers = []
+        for id, combo in enumerate(self.triangle_combos):
+            centers.append(self.get_triangle(id).get_center_position())
+        self.triangle_centers = np.stack(centers)
+
 
     def make_triangles(self, triangle_combos):
         for combo in triangle_combos:
@@ -25,10 +33,11 @@ class Mesh(object):
         return triangle
 
     def find_closest_triangle(self, position):
-        distances = 1000 * np.ones(len(self))
-        for i in range(len(self)):
-            cur_triangle = self.get_triangle(i)
-            distances[i] = np.linalg.norm(cur_triangle.get_center_position() - position)
+        # distances = 1000 * np.ones(len(self))
+        # for i in range(len(self)):
+        #     cur_triangle = self.get_triangle(i)
+        #     distances[i] = np.linalg.norm(cur_triangle.get_center_position() - position)
+        distances = np.linalg.norm(self.triangle_centers - position, axis=1)
         return np.argmin(distances)
 
 

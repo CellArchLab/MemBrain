@@ -231,15 +231,17 @@ def zyz_from_rotation_matrix(rotation_matrix):
     return phi, theta, psi
 
 
-def compute_Euler_angles_from_membranorama(orientation_dict, gt_dict, mesh_file):
+def compute_Euler_angles_from_membranorama(orientation_dict, gt_dict, mesh_file, return_as_dict=False):
     """
     Computes actual Euler angles from the angles and meshes given in a membranorama file.
     @return: array of Euler angles
     """
     mesh = process_meshes.read_obj_file_to_triangles(mesh_file)
     euler_arrays = []
+    euler_dict = {}
     for key, prot_orientations in orientation_dict.items():
         cur_ids = gt_dict[key][:, 3]
+        prot_eulers = []
         for cur_id, cur_orientation in zip(cur_ids, prot_orientations):
             cur_triangle = mesh.get_triangle(cur_id)
             rot = cur_triangle.get_plane_matrix()
@@ -248,7 +250,12 @@ def compute_Euler_angles_from_membranorama(orientation_dict, gt_dict, mesh_file)
             rot = np.transpose(rot, (1, 0))
             phi, theta, psi = zyz_from_rotation_matrix(rot.T)
             euler_arrays.append(np.array((phi, theta, psi)))
+            prot_eulers.append(np.array((phi, theta, psi)))
+        if len(prot_eulers) > 0:
+            euler_dict[key] = np.stack(prot_eulers)
     euler_arrays = np.stack(euler_arrays)
+    if return_as_dict:
+        return euler_dict
     return euler_arrays
 
 
