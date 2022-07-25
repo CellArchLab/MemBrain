@@ -327,6 +327,7 @@ def convert_csv_to_vtp(in_path, out_path, delimiter=',', hasHeader=False):
         vectors = vtk.vtkDoubleArray()
         vectors.SetNumberOfComponents(3)
         vectors.SetName("Normal")
+        normal_flag = False
         # if hasHeader:
         #     labels = vtk.vtkDoubleArray()
         #     labels.SetNumberOfComponents(1)
@@ -365,9 +366,11 @@ def convert_csv_to_vtp(in_path, out_path, delimiter=',', hasHeader=False):
             elif i == 0:
                 x_col, y_col, z_col, normX, normY, normZ = 0, 1, 2, 3, 4, 5
             coords = [float(row[x_col]), float(row[y_col]), float(row[z_col])]
-            normal = [float(row[normX]), float(row[normY]), float(row[normZ])]
             points.InsertNextPoint(coords[0], coords[1], coords[2])
-            vectors.InsertNextTuple([normal[0], normal[1], normal[2]])
+            if len(row) > 3:
+                normal = [float(row[normX]), float(row[normY]), float(row[normZ])]
+                vectors.InsertNextTuple([normal[0], normal[1], normal[2]])
+                normal_flag = True
             if hasHeader:
                 for token in token_dict.keys():
                     exec("labels_" + token + ".InsertNextValue(float(row[token_dict[token][0]]))")
@@ -377,8 +380,9 @@ def convert_csv_to_vtp(in_path, out_path, delimiter=',', hasHeader=False):
 
     polydata = vtk.vtkPolyData()
     polydata.SetPoints(points)
-    polydata.GetPointData().AddArray(vectors)
-    polydata.GetPointData().SetActiveVectors(vectors.GetName())
+    if normal_flag:
+        polydata.GetPointData().AddArray(vectors)
+        polydata.GetPointData().SetActiveVectors(vectors.GetName())
     if hasHeader:
         for token in token_dict.keys():
             exec("polydata.GetPointData().AddArray(labels_" + token + ")")
