@@ -150,6 +150,7 @@ def read_GT_data_membranorama_xml(gt_file_name, settings=None, prot_tokens=None,
         positions[:, 2] -= unbinned_offset_Z  # Uncomment
         positions[:, :3] = positions[:, :3] / (pixel_spacing_bin1)  # Uncomment
 
+        store_token = None
         if prot_tokens is not None:
             for prot_class in prot_tokens.keys():
                 if any(token in particle_group.attrib['Name'] for token in prot_tokens[prot_class]):
@@ -158,6 +159,8 @@ def read_GT_data_membranorama_xml(gt_file_name, settings=None, prot_tokens=None,
             store_token = particle_group.attrib['Name']
             if store_token not in pos_dict.keys():
                 pos_dict[store_token] = np.zeros((0, shape2))
+        if store_token is None:
+            continue
         pos_dict[store_token] = np.concatenate((pos_dict[store_token], positions), axis=0)
 
         if return_orientation:

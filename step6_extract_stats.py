@@ -43,7 +43,7 @@ def get_occs_for_current_particle(particle, rotation_matrix, positions, idx, mes
     occ -= np.mean(occ, axis=0)
     occ = occ[occ[:, 2] > 0]
     occ *= 3.42
-    occ = np.dot(occ, rotation_matrix)
+    occ = np.dot(rotation_matrix, occ.T).T
 
     pos = positions[idx, :3]
     occ += pos
@@ -97,9 +97,10 @@ for tomo_token, stack_token, mb_token, mesh_file, gt_file, pred_pos_file in zip(
     all_prot_dict = {}
     twenties = []
     before_twenties = []
-
+    
     shape_dict = get_shapes(PROT_SHAPES)
     for prot_token in PROT_SHAPES.keys():
+        all_occs = np.zeros((0,3))
         cur_shape = PROT_SHAPES[prot_token]
         particle = shape_dict[prot_token]
         cur_positions, cur_orientations = pos_dict[prot_token], ori_dict[prot_token]
@@ -111,13 +112,7 @@ for tomo_token, stack_token, mb_token, mesh_file, gt_file, pred_pos_file in zip(
             ids = find_closest_vertex_ids(occ, mesh).tolist()
             tri_centers = mesh.triangle_centers[ids]
             cur_prot_dict[idx] = ids
-            data_utils.store_array_in_csv('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_twenties.csv', np.array(mesh.vertices)[np.array(ids)])
-            data_utils.convert_csv_to_vtp('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_twenties.csv',
-                                  '/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_twenties.vtp')
-            data_utils.store_array_in_csv('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_occs.csv', occ)
-            data_utils.convert_csv_to_vtp('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_occs.csv',
-                                  '/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_occs.vtp')
-
+            all_occs = np.concatenate((all_occs, occ), 0)
         all_prot_dict[prot_token] = cur_prot_dict
         min_dists = []
         for idx in cur_prot_dict.keys():
@@ -125,64 +120,9 @@ for tomo_token, stack_token, mb_token, mesh_file, gt_file, pred_pos_file in zip(
             if len(e2e_ids_start) > 18:
                 twenties.append(e2e_ids_start)
             before_twenties += e2e_ids_start.tolist()
-            
-
             dists = gdist.compute_gdist(np.array(mesh.vertices), np.array(mesh.triangle_combos, dtype=np.int32), 
                                         source_indices=e2e_ids_start, target_indices=e2e_ids_target, max_distance=50000, is_one_indexed=True)
             min_dist = np.min(dists)
             min_dists.append(min_dist)
-        
-        print(prot_token, min_dists, "<-------")
-        data_utils.store_array_in_csv('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_twenties.csv', np.array(mesh.vertices)[before_twenties])
-        data_utils.convert_csv_to_vtp('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_twenties.csv',
-                                '/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_twenties.vtp')
     continue    
     
-
-    testID1 = pos_dict['PSII'][0, 3]
-    testID2 = pos_dict['PSII'][1, 3]
-    vertices = np.array(mesh.vertices)
-    triangles = np.array(mesh.triangle_combos, dtype=np.int32)
-
-    source_indices = np.array([testID1], dtype=np.int32)
-    target_indices = np.array([testID2], dtype=np.int32)
-    #source_indices = np.array([pos_dict['PSII'][0, 3], pos_dict['PSII'][1, 3], pos_dict['PSII'][2, 3]], dtype=np.int32)
-    source_indices = np.array([triangles[int(pos_dict['PSII'][0, 3])][0], triangles[int(pos_dict['PSII'][1, 3])][0], triangles[int(pos_dict['PSII'][2, 3])][0]], dtype=np.int32)
-    target_indices = np.array([triangles[int(pos_dict['PSII'][3, 3])][0], triangles[int(pos_dict['PSII'][4, 3])][0], triangles[int(pos_dict['PSII'][5, 3])][0]], dtype=np.int32)
-
-    dist = gdist.compute_gdist(vertices, triangles, source_indices=source_indices, target_indices=target_indices, max_distance=50000, is_one_indexed=True)
-
-
-    prot_shapes = PROT_SHAPES
-    psii_shape = prot_shapes['PSII']
-
-    rot = get_rotation_matrix_for_entry(eulers, token='PSII', id=0)
-    particle = data_utils.load_tomogram(psii_shape)
-    occ = get_occs_for_current_particle(particle, rot, pos_dict[prot_token], idx, mesh, normal_offset=5., make_occs_sparse=True)
-
-    pos = pos_dict['PSII'][0, :3]
-    
-    print(occ[:10], "<-.--")
-    occ += pos
-    
-    normal = mesh.get_triangle(int(pos_dict['PSII'][0, 3])).compute_normal()
-    occ += 5. * normal  # Move points further away from the mesh s.t. structure does not touch both sides of the membrane
-    occ = occ[np.arange(occ.shape[0]) % 10 == 0]  # make sparse
-    
-    ids = find_closest_triangle_ids(occ, mesh)
-    tri_centers = mesh.triangle_centers[ids]
-    print(tri_centers)
-
-
-
-    data_utils.store_array_in_csv('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_occs.csv', occ)
-    data_utils.convert_csv_to_vtp('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_occs.csv',
-                                  '/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_occs.vtp')
-
-    data_utils.store_array_in_csv('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_tris.csv', tri_centers)
-    data_utils.convert_csv_to_vtp('/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_tris.csv',
-                                  '/Users/lorenz.lamm/PhD_projects/MemBrain_post_stats/test_stuff/test_tris.vtp')
-    break
-
-
-
