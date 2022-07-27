@@ -849,13 +849,14 @@ def convert_from_txt_to_csv(in_file, out_file, delimiter_in='\t', delimiter_out=
                 csv_writer.writerow(row)
 
 
-def load_tomogram(filename, return_header=False):
+def load_tomogram(filename, return_header=False, verbose=True):
     """
     Loads data and transposes s.t. we have data in the form x,y,z
     :param filename:
     :return:
     """
-    print("Loading tomogram:", filename)
+    if verbose:
+        print("Loading tomogram:", filename)
 
     with mrcfile.open(filename, permissive=True) as mrc:
         data = np.array(mrc.data)
