@@ -178,6 +178,10 @@ def z_rot_matrix(phi):
 def y_rot_matrix(theta):
     return np.array(np.array([[np.cos(theta), 0., np.sin(theta)],[0., 1., 0.], [-1 * np.sin(theta), 0., np.cos(theta)]]))
 
+def x_rot_matrix(alpha):
+    return np.array([[1, 0, 0],[0, np.cos(alpha), -1 * np.sin(alpha)], [0, np.sin(alpha), np.cos(alpha)]])
+
+
 def zyz_rot_matrix(phi, theta, psi):
     a = np.cos(phi)
     b = np.sin(phi)
