@@ -180,7 +180,8 @@ class MemBrain_dataset(Dataset):
                         self.positions = cur_data['positions']
                         self.normals = cur_data['normals']
                         self.angles = cur_data['angles']
-                        self.labels = self.__convert_labels(cur_data)
+                        if GT_AVAIL:
+                            self.labels = self.__convert_labels(cur_data)
                         self.tomo_tokens = [tomo_token] * cur_data['subvolumes'].shape[0]
                         self.mb_tokens = [mb_token] * cur_data['subvolumes'].shape[0]
                         self.stack_tokens = [stack_token] * cur_data['subvolumes'].shape[0]
@@ -189,7 +190,8 @@ class MemBrain_dataset(Dataset):
                         self.positions = np.concatenate((self.positions, cur_data['positions']))
                         self.normals = np.concatenate((self.normals, cur_data['normals']))
                         self.angles = np.concatenate((self.angles, cur_data['angles']))
-                        self.labels = np.concatenate((self.labels, self.__convert_labels(cur_data)))
+                        if GT_AVAIL:
+                            self.labels = np.concatenate((self.labels, self.__convert_labels(cur_data)))
                         self.tomo_tokens += [tomo_token] * cur_data['subvolumes'].shape[0]
                         self.mb_tokens += [mb_token] * cur_data['subvolumes'].shape[0]
                         self.stack_tokens += [stack_token] * cur_data['subvolumes'].shape[0]
@@ -254,7 +256,10 @@ class MemBrain_dataset(Dataset):
 
     def __getitem__(self, idx):
         subvol = self.subvolumes[idx]
-        label = self.labels[idx]
+        if GT_AVAIL:
+            label = self.labels[idx]
+        else:
+            label = 10.
         if not USE_ROTATION_NORMALIZATION:
             if self.use_rotation_augmentation:
                 subvol = self.__rand_rot_augmentation(subvol)
@@ -264,7 +269,6 @@ class MemBrain_dataset(Dataset):
                 subvol = subvol[int(particle_cen[0] - BOX_RANGE):int(particle_cen[0] + BOX_RANGE),
                              int(particle_cen[1] - BOX_RANGE):int(particle_cen[1] + BOX_RANGE),
                              int(particle_cen[2] - BOX_RANGE):int(particle_cen[2] + BOX_RANGE)]
-
         if self.augment:
             subvol = self.__augment_subvol(subvol)
         if self.test_phase:

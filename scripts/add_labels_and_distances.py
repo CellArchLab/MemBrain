@@ -1,4 +1,5 @@
 # from preprocessing import create_DL_data
+from config import *
 from utils.parameters import ParameterSettings
 import numpy as np
 import h5py
@@ -341,11 +342,14 @@ def compute_distances_to_gt(star_file, particle_orientations=False, prot_shapes=
             cur_data_dict[(stack_token, mb_token)]['distances'] = {}
             mb_name = os.path.basename(obj_paths[tomo_token][(stack_token, mb_token)])[:-3]
             csv_name = os.path.join(settings.gt_paths[tomo_token], mb_name + 'csv')
-            cur_gt_points = data_utils.get_csv_data(csv_name, with_header=True)
+            if GT_AVAIL:
+                cur_gt_points = data_utils.get_csv_data(csv_name, with_header=True)
+            else:
+                cur_gt_points = np.zeros((1,4))
             gt_types = cur_gt_points[:, 0]
             unique_gt_types = np.unique(gt_types)
             gt_positions = np.array(cur_gt_points[:, 1:4], dtype=np.float)
-            if particle_orientations:
+            if particle_orientations and GT_AVAIL:
                 gt_orientations = np.array(cur_gt_points[:, 4:], dtype=np.float)
 
             all_dists = np.zeros((cur_data_points.shape[0], gt_positions.shape[0]))

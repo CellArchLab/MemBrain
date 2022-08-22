@@ -13,6 +13,7 @@ import multiprocessing as mp
 from scipy.ndimage import rotate
 from utils.rigid_3d import Rigid3D
 from config import *
+from scripts.add_labels_and_distances import z_rot_matrix, y_rot_matrix, zxz_rot_matrix, zyz_from_rotation_matrix, zyz_rot_matrix, x_rot_matrix
 
 
 def compute_all_Euler_angles(in_dir, out_dir, in_del=',', out_del=',', hasHeader=False):
@@ -58,7 +59,7 @@ def eulerAnglesToRotationMatrix(theta):
     return R
 
 
-def compute_all_Euler_angles_for_star(in_star, out_dir, in_del=',', out_del=',', hasHeader=False):
+def compute_all_Euler_angles_for_star(in_star, out_dir, in_del=',', out_del=',', hasHeader=False, convention='zyz'):
     """
     Computes Euler angles for given normal vectors.
     Output Euler angles are of shape Z-Y-Z
@@ -73,7 +74,7 @@ def compute_all_Euler_angles_for_star(in_star, out_dir, in_del=',', out_del=',',
     out_csv_list = []
     for i, csv_file in enumerate(csv_list):
         compute_Euler_angles_for_normals(csv_file, os.path.join(out_dir, os.path.basename(csv_file)), in_del=in_del,
-                                         out_del=out_del, hasHeader=hasHeader)
+                                         out_del=out_del, hasHeader=hasHeader, convention=convention)
         out_csv_list.append(os.path.join(out_dir, os.path.basename(csv_file)))
     star_dict['particleCSV'] = out_csv_list
     out_star_name = os.path.join(out_dir, os.path.basename(in_star))
@@ -91,8 +92,45 @@ def compute_Euler_angle_for_single_normals_array(normals):
         angles.append([rot, tilt, psi])
     return angles
 
+def zxz_from_rotation_matrix(rotation_matrix):
+    """
+    Returns Z-Y-Z Euler angels from a given rotation matrix.
+    """
 
-def compute_Euler_angles_for_normals(in_csv_path, out_csv_path, in_del=',', out_del=',', hasHeader=False):
+    phi = np.arctan2(rotation_matrix[2, 0], rotation_matrix[2, 1])
+    psi = np.arctan2(-rotation_matrix[0, 2], rotation_matrix[1, 2])
+    theta = np.arctan2(rotation_matrix[2,1] * np.cos(phi) + rotation_matrix[2, 0] * np.sin(phi), rotation_matrix[2,2])
+    # a = np.arctan2(-rotation_matrix[0,2], rotation_matrix[1,2])
+    # b = np.arctan2(-rotation_matrix[2,0], rotation_matrix[2,1])
+    # c = np.pi / 2 - np.sin(rotation_matrix[2,2])
+    return phi, theta, psi
+
+
+def zyz_to_rotation_matrix(phi, theta, psi):
+    return np.dot(z_rot_matrix(psi), np.dot(y_rot_matrix(theta), z_rot_matrix(phi)))
+
+
+def zxz_to_rotation_matrix(phi, theta, psi):
+    return np.dot(z_rot_matrix(psi), np.dot(x_rot_matrix(theta), z_rot_matrix(phi)))
+
+
+def compute_zxz_Euler_angle_for_single_normals_array_testversion(normals):
+    angles = []
+    for normal in normals:
+        rot, tilt, psi = vect_to_zrelion(normal)
+        rot_mat = zyz_rot_matrix(np.deg2rad(rot), np.deg2rad(tilt), np.deg2rad(psi))
+        zxz_angles = zxz_from_rotation_matrix(rot_mat)
+        rot_mat = zxz_to_rotation_matrix(*zxz_angles)
+        rot_mat = -rot_mat.T
+        zxz_angles_new = np.rad2deg(zxz_from_rotation_matrix(rot_mat))
+        angle = zxz_angles_new.tolist()
+        angle[1] = 180-angle[1]
+        rot, tilt, psi = angle[0], angle[1], angle[2]
+        angles.append([rot, tilt, psi])
+    return angles
+
+
+def compute_Euler_angles_for_normals(in_csv_path, out_csv_path, in_del=',', out_del=',', hasHeader=False, convention='zyz'):
     """
     For a csv file containing positions and normals, Z-Y-Z Euler angles are computed and stored into another csv file.
     """
@@ -106,7 +144,11 @@ def compute_Euler_angles_for_normals(in_csv_path, out_csv_path, in_del=',', out_
                 continue
             points.append(np.array(row[:3], dtype=np.float))
             normals.append(np.array(row[3:6], dtype=np.float))
-    angles = compute_Euler_angle_for_single_normals_array(normals)
+    if convention == 'zyz':
+        angles = compute_Euler_angle_for_single_normals_array(normals)
+    elif convention == 'zxz':
+        angles = compute_zxz_Euler_angle_for_single_normals_array_testversion(normals)
+    # angles = compute_Euler_angle_for_single_normals_array(normals)
 
     with open(out_csv_path, 'w') as out_csv_file:
         csv_writer = csv.writer(out_csv_file)

@@ -35,7 +35,7 @@ class MeanShift_clustering(object):
             'Cham_self': []
         }
 
-    def start_clustering(self, bandwidth, recluster_thres=None, recluster_bw=None):
+    def start_clustering(self, bandwidth, recluster_thres=None, recluster_bw=None, convention='zyz'):
         self.recluster_thres = recluster_thres
         self.recluster_bw = recluster_bw
         star_dict = star_utils.read_star_file_as_dict(self.star_file)
@@ -44,7 +44,7 @@ class MeanShift_clustering(object):
         cluster_paths, points_with_labels_paths = [], []
         for heatmap_file, particle_csv  in zip(heatmap_paths, particle_csv_paths):
             out_path, points_with_labels_path = self.__cluster_NN_output(heatmap_file, particle_csv,
-                                                                         bandwidth=bandwidth)
+                                                                         bandwidth=bandwidth, convention=convention)
             cluster_paths.append(out_path)
             points_with_labels_paths.append(points_with_labels_path)
 
@@ -194,7 +194,7 @@ class MeanShift_clustering(object):
         data_utils.store_array_in_csv(os.path.join(self.out_dir, 'tuning_stats.csv'), out_metrics,
                                       header=header)
 
-    def __cluster_NN_output(self, score_file, particle_csv, bandwidth=20):
+    def __cluster_NN_output(self, score_file, particle_csv, bandwidth=20, convention='zyz'):
         data, header = get_csv_data(score_file, with_header=True, return_header=True)
         # data = get_csv_data(score_file)#, with_header=True, return_header=True)
         data = np.array(data, dtype=np.float)
@@ -227,7 +227,7 @@ class MeanShift_clustering(object):
         points_with_labels_path = store_points_with_labels(score_file, self.out_dir, all_coords_masked, cluster_labels,
                                                            bandwidth, out_stem='meanshift')
         cluster_centers_with_normals = compute_normals_and_angles_for_centers(cluster_centers, particle_csv,
-                                                                              self.settings)
+                                                                              self.settings, convention=convention)
         if cluster_centers_with_normals.shape[0] == 0:
             cluster_centers_with_normals = np.ones((0, 10))
         out_path = store_cluster_centers(score_file, self.out_dir, cluster_centers_with_normals, bandwidth=bandwidth,
@@ -325,7 +325,7 @@ def store_points_with_labels(score_file, out_dir, coords, labels, bandwidth, out
     return out_path
 
 
-def compute_normals_and_angles_for_centers(cluster_centers, particle_csv, settings=None):
+def compute_normals_and_angles_for_centers(cluster_centers, particle_csv, settings=None, convention='zyz'):
     '''Cluster centers should be given in bin1, i.e. also heatmaps should be computed in bin1!'''
     if settings is not None:
         scale = settings.consider_bin * 1.0 / 2
@@ -334,7 +334,10 @@ def compute_normals_and_angles_for_centers(cluster_centers, particle_csv, settin
     pos_array = np.array(all_array[:, :3], dtype=np.float) * scale
     normal_array = np.array(all_array[:, 3:6], dtype=np.float)
     new_normals = normal_voting.normal_voting_for_pos_and_normal_array(cluster_centers[:, :3], normal_array, neighbor_threshold=50, decay_param=100, len_thres=4, compare_array=pos_array * 2)
-    euler_angles = np.array(rotator.compute_Euler_angle_for_single_normals_array(new_normals))
+    if convention == 'zyz':
+        euler_angles = np.array(rotator.compute_Euler_angle_for_single_normals_array(new_normals))
+    else:
+        euler_angles = np.array(rotator.compute_zxz_Euler_angle_for_single_normals_array_testversion(new_normals))
     out_array = np.concatenate((cluster_centers[:, :3], new_normals, euler_angles, np.expand_dims(cluster_centers[:, 3], 1)), axis=1)
     return out_array
 

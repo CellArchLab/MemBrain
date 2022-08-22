@@ -77,7 +77,7 @@ def _extrapolate(temp_seg, conn_comp_idcs, max_mb_dst):
         x_vals_max = range(np.max(conn_comp_idcs[:, 0] - 10), np.max(conn_comp_idcs))
         y_vals_max = []
 
-        for i in range(10):
+        for i in range(9):
             y_idcs_min = np.argwhere(conn_comp_idcs[:, 0] == (np.min(conn_comp_idcs[:, 0] + i)))
             if len(y_idcs_min) == 0:
                 break
@@ -91,19 +91,24 @@ def _extrapolate(temp_seg, conn_comp_idcs, max_mb_dst):
             y_vals_max.append(np.mean(y_vals_max_temp))
 
         y_vals_max.reverse()
-        min_start_x = np.maximum(np.min(conn_comp_idcs[:, 0]) - (10 + max_mb_dst), 0)
-        max_end_x = np.minimum(np.max(conn_comp_idcs[:, 0]) + 10 + max_mb_dst, temp_seg.shape[0])
-        new_ys_min = _extrapolate_linearly_1D(x_vals_min, y_vals_min, [range(min_start_x, np.minimum(np.min(conn_comp_idcs[:, 0]) + 10, temp_seg.shape[0] - 1))])
-        new_ys_max = _extrapolate_linearly_1D(x_vals_max, y_vals_max, [range(np.maximum(np.max(conn_comp_idcs[:, 0] - 10), 0), max_end_x)])
+        min_start_x = np.maximum(np.min(conn_comp_idcs[:, 0]) - (9 + max_mb_dst), 0)
+        max_end_x = np.minimum(np.max(conn_comp_idcs[:, 0]) + 9 + max_mb_dst, temp_seg.shape[0]-1)
+        new_ys_min = _extrapolate_linearly_1D(x_vals_min, y_vals_min, [range(min_start_x, np.minimum(np.min(conn_comp_idcs[:, 0]) + 9, temp_seg.shape[0] - 1))])
+        new_ys_max = _extrapolate_linearly_1D(x_vals_max, y_vals_max, [range(np.maximum(np.max(conn_comp_idcs[:, 0] - 9), 0), max_end_x-1)])
 
-        new_ys_min = np.minimum(np.maximum(np.around(new_ys_min), 1), temp_seg.shape[1]-1)
-        new_ys_max = np.minimum(np.maximum(np.around(new_ys_max), 1), temp_seg.shape[1]-1)
-        inds_min = np.array(range(min_start_x, np.min(conn_comp_idcs[:, 0] + 10)))
-        inds_max = np.array(range(np.max(conn_comp_idcs[:, 0] - 10), max_end_x))
+        new_ys_min = np.minimum(np.maximum(np.around(new_ys_min), 1), temp_seg.shape[1]-2)
+        new_ys_max = np.minimum(np.maximum(np.around(new_ys_max), 1), temp_seg.shape[1]-2)
+        inds_min = np.array(range(min_start_x, np.min(conn_comp_idcs[:, 0] + 9)))
+        inds_max = np.array(range(np.max(conn_comp_idcs[:, 0] - 9), max_end_x- 1))
 
+        #TODO: Added these lines to adjust for Manon's Pyshell
+        inds_min = inds_min[:new_ys_min.shape[0]]
+        inds_max = inds_max[:new_ys_max.shape[0]]
 
         new_ys_min = new_ys_min[:inds_min.shape[0]]
         new_ys_max = new_ys_max[:inds_max.shape[0]]
+
+        
 
         new_ys_min = np.concatenate((new_ys_min - 1, new_ys_min, new_ys_min +1), axis=0)
         new_ys_max = np.concatenate((new_ys_max - 1, new_ys_max, new_ys_max +1), axis=0)
@@ -113,12 +118,12 @@ def _extrapolate(temp_seg, conn_comp_idcs, max_mb_dst):
         coords_min = np.stack((inds_min, new_ys_min), axis=1).T
         coords_max = np.stack((inds_max, new_ys_max), axis=1).T
     else:
-        y_vals_min = range(np.min(conn_comp_idcs[:, 1]), np.min(conn_comp_idcs[:, 1]) + 10)
+        y_vals_min = range(np.min(conn_comp_idcs[:, 1]), np.min(conn_comp_idcs[:, 1]) + 9)
         x_vals_min = []
-        y_vals_max = range(np.max(conn_comp_idcs[:, 1] - 10), np.max(conn_comp_idcs))
+        y_vals_max = range(np.max(conn_comp_idcs[:, 1] - 9), np.max(conn_comp_idcs))
         x_vals_max = []
 
-        for i in range(10):
+        for i in range(9):
             x_idcs_min = np.argwhere(conn_comp_idcs[:, 1] == (np.min(conn_comp_idcs[:, 1] + i)))
             if len(x_idcs_min) == 0:
                 break
@@ -132,20 +137,23 @@ def _extrapolate(temp_seg, conn_comp_idcs, max_mb_dst):
             x_vals_max.append(np.mean(x_vals_max_temp))
         x_vals_max.reverse()
 
-        min_start_y = np.maximum(np.min(conn_comp_idcs[:, 1]) - (10 + max_mb_dst), 0)
-        max_end_y = np.minimum(np.max(conn_comp_idcs[:, 1]) + 10 + max_mb_dst, temp_seg.shape[1])
+        min_start_y = np.maximum(np.min(conn_comp_idcs[:, 1]) - (9 + max_mb_dst), 0)
+        max_end_y = np.minimum(np.max(conn_comp_idcs[:, 1]) + 9 + max_mb_dst, temp_seg.shape[1]-1)
         new_xs_min = _extrapolate_linearly_1D(y_vals_min, x_vals_min, [
-            range(min_start_y, np.minimum(np.min(conn_comp_idcs[:, 1]) + 10, temp_seg.shape[1] - 1))])
+            range(min_start_y, np.minimum(np.min(conn_comp_idcs[:, 1]) + 9, temp_seg.shape[1] - 1))])
         new_xs_max = _extrapolate_linearly_1D(y_vals_max, x_vals_max,
-                                              [range(np.maximum(np.max(conn_comp_idcs[:, 1] - 10), 0), max_end_y)])
+                                              [range(np.maximum(np.max(conn_comp_idcs[:, 1] - 9), 0), max_end_y - 1)])
 
-        new_xs_min = np.minimum(np.maximum(np.around(new_xs_min), 1), temp_seg.shape[0] - 1)
-        new_xs_max = np.minimum(np.maximum(np.around(new_xs_max), 1), temp_seg.shape[0] - 1)
-        inds_min = np.array(range(min_start_y, np.min(conn_comp_idcs[:, 1] + 10)))
-        inds_max = np.array(range(np.max(conn_comp_idcs[:, 1] - 10), max_end_y))
+        new_xs_min = np.minimum(np.maximum(np.around(new_xs_min), 1), temp_seg.shape[0] - 2)
+        new_xs_max = np.minimum(np.maximum(np.around(new_xs_max), 1), temp_seg.shape[0] - 2)
+        inds_min = np.array(range(min_start_y, np.min(conn_comp_idcs[:, 1] + 9)))
+        inds_max = np.array(range(np.max(conn_comp_idcs[:, 1] - 9), max_end_y - 1))
 
         new_xs_min = new_xs_min[:inds_min.shape[0]]
         new_xs_max = new_xs_max[:inds_max.shape[0]]
+        #TODO: Added these lines to adjust for Manon's Pyshell
+        inds_min = inds_min[:new_xs_min.shape[0]]
+        inds_max = inds_max[:new_xs_max.shape[0]]
 
         new_xs_min = np.concatenate((new_xs_min - 1, new_xs_min, new_xs_min + 1), axis=0)
         new_xs_max = np.concatenate((new_xs_max - 1, new_xs_max, new_xs_max + 1), axis=0)
@@ -157,7 +165,6 @@ def _extrapolate(temp_seg, conn_comp_idcs, max_mb_dst):
 
     temp_segregation_mask = np.zeros_like(temp_seg)
     temp_segregation_mask[tuple(np.array(coords_min, dtype=np.int))] = 1
-
     temp_segregation_mask[tuple(np.array(coords_max, dtype=np.int))] = 1
     temp_segregation_mask = binary_dilation(temp_segregation_mask)
 
@@ -219,7 +226,7 @@ def _get_segmentation_side(in_seg_path, tomo, max_mb_dist, mb_ht, orig_pos):
             print("Current slice:", z,'/',  pre_seg.shape[2])
         if np.sum(pre_seg[:, :, z]) < 5:
             continue
-        conn_comp_array, tot_conn_comps = label(pre_seg[:, :, z], return_num=True, connectivity=2)
+        conn_comp_array, tot_conn_comps = label(pre_seg[:, :, z], return_num=True, connectivity=1)
 
         for conn_comp_nr in range(1, tot_conn_comps + 1):
             ## Get all points in the surrounding of the membrane segmentation
@@ -233,9 +240,17 @@ def _get_segmentation_side(in_seg_path, tomo, max_mb_dist, mb_ht, orig_pos):
             segregation_mask = _extrapolate(H_temp, np.argwhere(conn_comp_array == conn_comp_nr), max_mb_dist)
             mask = (H_temp == 2) * 1.0
             mask[segregation_mask == 1] = 2
-            conn_comps_seg, conn_comps_seg_num = label(mask == 1, return_num=True)
+            conn_comps_seg, conn_comps_seg_num = label(mask == 1, return_num=True) 
             if conn_comps_seg_num != 2:
                 print("WARNING! The membrane sides are not separated properly! Check whether sampled points are correct.")
+                print("Instead, we have ", conn_comps_seg_num, "components.")
+                # from matplotlib import pyplot as plt
+                # plt.figure()
+                # plt.subplot(1,2,1)
+                # plt.imshow(mask)
+                # plt.subplot(1,2,2)
+                # plt.imshow(conn_comps_seg)
+                # plt.show()
 
             """ Extract indices, their connection vectors to the membranes and the connection vectors to the origin point
             Compare these two vectors using the dot product
@@ -286,13 +301,21 @@ def sample_uniformly(tomo_seg_path, out_path, tomo_token, stack_token, mb_token,
 
     new_seg = np.zeros_like(tomo_seg)
     new_seg[mask] = 1
+    new_seg[tomo_seg != 2] = 0
 
     new_idcs = np.argwhere(new_seg == 1)
     mask10th = np.array(range(new_idcs.shape[0])) % 10 == 0
     new_idcs = new_idcs[mask10th]
-    mb_half_idcs = np.argwhere(tomo_seg == 2)
-    mb_half_mask = (new_idcs[:, None] == mb_half_idcs).all(-1).any(-1)
-    new_idcs = new_idcs[mb_half_mask]
+    # mb_half_idcs = np.argwhere(tomo_seg == 2)
+    # print(new_idcs.shape)
+    # print(mb_half_idcs.shape)
+    # print(np.all(np.isin(new_idcs, mb_half_idcs), axis=1).shape, "isin mask")
+
+    # print(new_idcs[:, None].shape)
+    # print((new_idcs[:, None] == mb_half_idcs), "<--")
+    # new_idcs = new_idcs[:, 0, :] #TODO: Changed this line of code!!
+    # mb_half_mask = (new_idcs[:, None] == mb_half_idcs).all(-1).any(-1)
+    # new_idcs = new_idcs[mb_half_mask]
 
     new_mb_points = idcs[tuple(new_idcs.T)]
     new_dt = dist_trafo[tuple(new_idcs.T)]
@@ -405,26 +428,30 @@ def sample_points_on_seg(out_dir, in_star, out_path, max_mb_dist=60, mh_ht=0, ou
     for i, tomo_token in enumerate(tomo_tokens):
         tomo_path = tomo_paths[i]
         mb_token = mb_tokens[i]
-        # if mb_token == 'M2':
+        # if mb_token != 'M1A':
         #     continue
         stack_token = stack_tokens[i]
         # tomo_bin = tomo_bins[i]
         in_seg_path = seg_paths[i]
+
         orig_pos = np.array((orig_posX[i], orig_posY[i], orig_posZ[i]), dtype=np.float)
         # gt_path = gt_paths[i]
 
+
+
         if prev_tomo_token != tomo_token:
             tomo = data_utils.load_tomogram(tomo_path)
-            Mbu, tomo, ranges = _get_segmentation_side(in_seg_path, tomo, max_mb_dist, mh_ht, orig_pos)
+            prev_tomo_token = tomo_token
+        Mbu, tomo, ranges = _get_segmentation_side(in_seg_path, tomo, max_mb_dist, mh_ht, orig_pos)
 
-            mic_out_path = os.path.join(out_dir, 'mics', tomo_token + '_' + stack_token + '_' + mb_token + '.mrc')
-            seg_out_path = os.path.join(out_dir, 'segs', tomo_token + '_' + stack_token + '_' + mb_token + '.mrc')
-            data_utils.store_tomogram(mic_out_path, tomo)
-            data_utils.store_tomogram(seg_out_path, Mbu)
-            sample_uniformly(seg_out_path, out_path, tomo_token, stack_token, mb_token, shrink_thres, ranges)
+        mic_out_path = os.path.join(out_dir, 'mics', tomo_token + '_' + stack_token + '_' + mb_token + '.mrc')
+        seg_out_path = os.path.join(out_dir, 'segs', tomo_token + '_' + stack_token + '_' + mb_token + '.mrc')
+        data_utils.store_tomogram(mic_out_path, tomo)
+        data_utils.store_tomogram(seg_out_path, Mbu)
+        sample_uniformly(seg_out_path, out_path, tomo_token, stack_token, mb_token, shrink_thres, ranges)
 
-            particle_csv = os.path.join(out_path, tomo_token + '_' + stack_token + '_' + mb_token + '_pred_positions.csv')
-            particle_csvs.append(particle_csv)
+        particle_csv = os.path.join(out_path, tomo_token + '_' + stack_token + '_' + mb_token + '_pred_positions.csv')
+        particle_csvs.append(particle_csv)
 
     star_dict_out = star_dict.copy()
     star_dict_out['particleCSV'] = particle_csvs
