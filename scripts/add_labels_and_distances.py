@@ -188,6 +188,15 @@ def zyz_rot_matrix(phi, theta, psi):
     return np.array([[e*a*c - b*f, -a*c*f - e*b, a*d], [a*f + e*b*c, e*a - b*c*f, b*d], [-e*d, d*f, c]])
 
 
+def zxz_rot_matrix(phi, theta, psi):
+    a = np.cos(phi)
+    b = np.sin(phi)
+    c = np.cos(theta)
+    d = np.sin(theta)
+    e = np.cos(psi)
+    f = np.sin(psi)
+    return np.array([[e*a - b*f*c, a*f + e*c*b, b*d], [-f*c*a - e*b, e*c*a - f*b, a*d], [f*d, -e*d, c]])
+
 
 def get_rotated_inversed_covariance_matrix(angles, particle_type, cur_tri_ID, cur_tomo, cur_mb, cur_stack, mesh_dict, avoid_inversion=False):
     if particle_type == 'PSII':
