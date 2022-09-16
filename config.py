@@ -7,6 +7,7 @@ TOMO_DIR = './toy_data/tomograms' # path of directory containing the data (Tomo1
 ## General project settings
 
 PIXEL_SPACING_BIN1 = 13.68
+UNBINNED_OFFSET_Z = 3174.  # This should normally be 0. For toy data, it is 3174.
 TOMO_BINNING = 4
 USE_GPU = True
 PICK_ON_BOTH_SIDES = True # This should be True, if you are working on a cluster without the possibility to use
