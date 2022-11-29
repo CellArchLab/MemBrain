@@ -233,44 +233,7 @@ def normal_voting_for_star(in_star, out_dir, npr=1):
 
 
 def main():
-    cases = ['chlamy', 'synthetic', 'spinach', 'synthetic_bin4_lownoise', 'Chlamy_bin4', 'spinach_val', 'spinach_bin1', 'new_spinach', 'new_spinach_all', 'matthias']
-    case = 'matthias'
-    assert case in cases
-
-    npr = 20
-
-    if case == 'chlamy':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_Chlamy/positions/chlamy.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_Chlamy/positions/normals_corrected/'
-    elif case == 'synthetic':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_synthetic_bin4/positions/synth_normal_density_bin4.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_synthetic_bin4/positions/normals_corrected/'
-    elif case == 'spinach':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_spinach/positions/chlamy.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_spinach/positions/normals_corrected/'
-    elif case == 'synthetic_bin4_lownoise':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_synthetic_bin4_lownoise/positions/synth_bin4_low_noise.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_synthetic_bin4_lownoise/positions/normals_corrected/'
-    elif case == 'Chlamy_bin4':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_Chlamy_bin4/positions/chlamy.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_Chlamy_bin4/positions/normals_corrected/'
-    elif case == 'spinach_val':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_spinach_validation/positions/chlamy.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_spinach_validation/positions/normals_corrected/'
-    elif case == 'spinach_bin1':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_spinach_bin1/positions/chlamy.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_spinach_bin1/positions/normals_corrected/'
-    elif case == 'new_spinach':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_new_spinach/positions/new_spinach.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_new_spinach/positions/normals_corrected/'
-    elif case == 'new_spinach_all':
-        in_star = '/fs/pool/pool-engel/Lorenz/pipeline_new_spinach_all/positions/new_spinach.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/pipeline_new_spinach_all/positions/normals_corrected/'
-    elif case == 'matthias':
-        in_star = '/fs/pool/pool-engel/Lorenz/Matthias_project/pipeline/positions/matthias.star'
-        out_dir = '/fs/pool/pool-engel/Lorenz/Matthias_project/pipeline/positions/normals_corrected'
-    normal_voting_for_star(in_star, out_dir, npr=npr)
-
+    pass
 
 
 if __name__ == '__main__':
