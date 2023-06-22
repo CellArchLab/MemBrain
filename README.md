@@ -1,6 +1,6 @@
 # Important Note
 This is MemBrain v1 -- you might be actually looking for MemBrain v2, which adds more capabilities, including segmentation of membranes.
-If this is the case, please check out this [MemBrain-seg](https://github.com/teamtomo/membrain-seg) on the #TeamTomo Github.
+If this is the case, please check out [MemBrain-seg](https://github.com/teamtomo/membrain-seg) on the #TeamTomo Github.
 
 # MemBrain
 ### Automated detection of membrane-bound proteins
